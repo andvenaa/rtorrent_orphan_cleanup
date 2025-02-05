@@ -50,27 +50,34 @@ rtorrent = None
 ############################################################
 
 def remove_path(file_path, auto_remove=False):
-    if not auto_remove:
-        log.warning("Do you want to remove: %s (y/n)", file_path)
-        yn = input()
+    stfolder = ".stfolder"
+
+    if stfolder in file_path:
+        return
     else:
-        yn = 'y'
-    if yn.lower() == 'y':
-        # delete the path
-        is_folder = os.path.isdir(file_path)
-        if path.delete(file_path):
-            # the file/folder was removed
-            if not is_folder:
-                folder_path = os.path.dirname(file_path)
-                left_over_files = path.find_files(folder_path)
-                if not len(left_over_files):
-                    if not auto_remove:
-                        log.warning("Do you want to remove the orphaned folder: %s (y/n)", folder_path)
-                        yn = input()
-                    else:
-                        yn = 'y'
-                    if yn.lower() == 'y':
-                        path.delete(folder_path)
+        if not auto_remove:
+            log.warning("Do you want to remove: %s (y/n)", file_path)
+            yn = input()
+        else:
+            yn = 'y'
+        if yn.lower() == 'y':
+            # delete the path
+            is_folder = os.path.isdir(file_path)
+            if path.delete(file_path):
+                # the file/folder was removed
+                if not is_folder:
+                    folder_path = os.path.dirname(file_path)
+                    left_over_files = path.find_files(folder_path)
+                    if not len(left_over_files):
+                        if not auto_remove:
+                            log.warning("Do you want to remove the orphaned folder: %s (y/n)", folder_path)
+                            yn = input()
+                        else:
+                            yn = 'y'
+                        if yn.lower() == 'y':
+                            path.delete(folder_path)
+
+
 
 
 def existing_folder(folder_path, torrent_files):
